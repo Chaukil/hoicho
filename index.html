@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Quản Lý Hàng Hóa</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>QUẢN TRỊ</h2>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li id="navDashboard"><a href="#"><i class="fas fa-chart-line"></i> Tổng quan</a></li>
+                    <li id="navProducts"><a href="#"><i class="fas fa-box"></i> Quản lý Sản phẩm</a></li>
+                    <li id="navInventoryIn"><a href="#"><i class="fas fa-truck-loading"></i> Nhập kho</a></li>
+                    <li id="navInventoryHistory"><a href="#"><i class="fas fa-history"></i> Lịch sử Nhập kho</a></li>
+                    <li id="navConsume"><a href="#"><i class="fas fa-cash-register"></i> Tiêu hao Hàng hóa</a></li>
+                    <li id="navReports"><a href="#"><i class="fas fa-chart-pie"></i> Báo cáo</a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-toggle-area">
+                <button id="sidebarToggle" class="sidebar-toggle">
+                    <i class="fas fa-angles-left"></i>
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content-area">
+            <header class="main-header">
+                <h1 id="pageTitle">Tổng quan</h1>
+                <div class="user-profile">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </header>
+
+            <section id="dashboardSection" class="content-section">
+                <div class="kpis">
+                    <div class="kpi-card">
+                        <h3>Tổng Sản Phẩm</h3>
+                        <p id="totalProductsCount">0</p>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Tổng Nhập Kho</h3>
+                        <p id="totalInventoryInValue">0 VNĐ</p>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Tổng Tiêu Hao</h3>
+                        <p id="totalConsumedValue">0 VNĐ</p>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Tổng Lợi Nhuận</h3>
+                        <p id="totalProfitValue">0 VNĐ</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-charts">
+        <div class="chart-container">
+            <h3>Sản phẩm sắp hết hàng / hết hàng</h3>
+            <ul class="product-list" id="lowStockProductsList">
+                <li>Đang tải...</li>
+            </ul>
+        </div>
+        <div class="chart-container">
+            <h3>Tổng lợi nhuận 7 ngày gần nhất</h3> <canvas id="profitChart"></canvas> </div>
+    </div>
+            </section>
+
+            <section id="productsSection" class="content-section hidden">
+               
+                <div class="action-bar">
+                    <button id="addProductButton" class="action-button"><i class="fas fa-plus"></i> Thêm Sản phẩm</button>
+                    <div class="search-bar">
+                        <input type="text" id="productSearchInput" placeholder="Tìm kiếm sản phẩm...">
+                        <button id="searchProductButton" class="action-button"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Tên Hàng Hóa</th>
+                                <th>Đơn vị</th>
+                                <th>Tồn kho tối thiểu</th>
+                                <th>Tồn kho hiện tại</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="inventoryInSection" class="content-section hidden">
+                
+                <div class="action-bar">
+                    <button id="addInventoryInButton" class="action-button"><i class="fas fa-truck-loading"></i> Tạo phiếu nhập</button>
+                    <div class="search-bar">
+                        <input type="text" id="inventoryInSearchInput" placeholder="Tìm kiếm phiếu nhập...">
+                        <button id="searchInventoryInButton" class="action-button"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Mã phiếu</th>
+                                <th>Ngày nhập</th>
+                                <th>Người nhập</th>
+                                <th>Tổng giá trị</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryInTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="inventoryHistorySection" class="content-section hidden">
+                
+                <div class="filter-bar">
+                    <label for="inventoryHistoryProductFilter">Sản phẩm:</label>
+                    <select id="inventoryHistoryProductFilter" class="form-control">
+                        </select>
+                    <label for="inventoryHistoryStartDate">Từ ngày:</label>
+                    <input type="date" id="inventoryHistoryStartDate" class="form-control">
+                    <label for="inventoryHistoryEndDate">Đến ngày:</label>
+                    <input type="date" id="inventoryHistoryEndDate" class="form-control">
+                    <button id="filterInventoryHistoryButton" class="action-button"><i class="fas fa-filter"></i> Lọc</button>
+                    <button id="resetInventoryHistoryFilterButton" class="action-button"><i class="fas fa-redo"></i> Đặt lại</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Mã phiếu nhập</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Ngày nhập</th>
+                                <th>Số lượng</th>
+                                <th>Giá nhập</th>
+                                <th>Tổng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryHistoryTableBody">
+                            </tbody>
+                    </table>
+                </div>
+                <div class="pagination-controls">
+                    <button id="prevInventoryHistoryPage" class="action-button" disabled>Trước</button>
+                    <span id="currentInventoryHistoryPage">Trang 1</span>
+                    <button id="nextInventoryHistoryPage" class="action-button" disabled>Sau</button>
+                </div>
+            </section>
+
+            <section id="consumeSection" class="content-section hidden">
+              
+                <div class="action-bar">
+                    <button id="addConsumeButton" class="action-button"><i class="fas fa-plus"></i> Tạo phiếu tiêu hao</button>
+                    <div class="search-bar">
+                        <input type="text" id="consumeSearchInput" placeholder="Tìm kiếm phiếu tiêu hao...">
+                        <button id="searchConsumeButton" class="action-button"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Mã phiếu</th>
+                                <th>Ngày tạo</th>
+                                <th>Người tạo</th>
+                                <th>Tổng giá trị</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="consumeTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="reportsSection" class="content-section hidden">
+                
+                <div class="report-filters">
+                    <label for="reportPeriodSelect">Chọn kỳ báo cáo:</label>
+                    <select id="reportPeriodSelect" class="form-control">
+                        <option value="">-- Chọn --</option>
+                        <option value="today">Hôm nay</option>
+                        <option value="thisWeek">Tuần này</option>
+                        <option value="thisMonth">Tháng này</option>
+                        <option value="thisYear">Năm nay</option>
+                        <option value="custom">Tùy chỉnh</option>
+                    </select>
+                    <input type="date" id="reportStartDate" class="form-control hidden">
+                    <input type="date" id="reportEndDate" class="form-control hidden">
+                    <button id="generateReportButton" class="action-button"><i class="fas fa-file-invoice"></i> Tạo Báo cáo</button>
+                </div>
+                <div class="report-content" id="profitReportContent">
+                    </div>
+            </section>            
+
+            <div id="productModal" class="modal hidden">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h3 id="modalTitle">Thêm Sản phẩm</h3>
+                    <form id="addProductForm">
+                        <input type="hidden" id="productId">
+                        <div class="form-group">
+                            <label for="productName">Tên Hàng Hóa:</label>
+                            <input type="text" id="productName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productUnit">Đơn vị:</label>
+                            <input type="text" id="productUnit" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="productMinStock">Tồn kho tối thiểu:</label>
+                            <input type="number" id="productMinStock" min="0" required>
+                        </div>
+                        <button type="submit" id="saveProductButton" class="action-button"><i class="fas fa-plus"></i> Thêm sản phẩm</button>
+                        <span id="productStatusMessage" class="status-message"></span>
+                    </form>
+                </div>
+            </div>
+
+            <div id="inventoryInModal" class="modal hidden">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h3>Tạo phiếu nhập kho</h3>
+                    <form id="addInventoryInForm">
+                        <div class="form-group">
+                            <label for="inventoryInDate">Ngày nhập:</label>
+                            <input type="date" id="inventoryInDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inventoryInSupplier">Nhà cung cấp:</label>
+                            <input type="text" id="inventoryInSupplier">
+                        </div>
+                        <h4>Danh sách sản phẩm nhập</h4>
+                        <div id="inventoryInProductsContainer">
+                            <div class="inventory-product-item">
+                                <select class="inventory-product-select" required>
+                                    <option value="">Chọn sản phẩm</option>
+                                    </select>
+                                <input type="number" class="inventory-product-quantity" placeholder="Số lượng" min="1" required>
+                                <input type="number" class="inventory-product-price" placeholder="Giá nhập (VNĐ)" min="0" step="0.01" required>
+                                <button type="button" class="remove-product-button"><i class="fas fa-minus-circle"></i></button>
+                            </div>
+                        </div>
+                        <button type="button" id="addInventoryInProductButton" class="action-button small"><i class="fas fa-plus-circle"></i> Thêm sản phẩm</button>
+                        <div class="form-group total-amount">
+                            <label>Tổng giá trị:</label>
+                            <span id="inventoryInTotalAmount">0 VNĐ</span>
+                        </div>
+                        <button type="submit" class="action-button"><i class="fas fa-save"></i> Lưu phiếu nhập</button>
+                        <span id="inventoryInStatusMessage" class="status-message"></span>
+                    </form>
+                </div>
+            </div>
+
+            <div id="consumeModal" class="modal hidden">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h3>Tạo phiếu tiêu hao</h3>
+                    <form id="addConsumeForm">
+                        <div class="form-group">
+                            <label for="consumeDate">Ngày tiêu hao:</label>
+                            <input type="date" id="consumeDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="consumeReason">Lý do tiêu hao:</label>
+                            <input type="text" id="consumeReason">
+                        </div>
+                        <h4>Danh sách sản phẩm tiêu hao</h4>
+                        <div id="consumeProductsContainer">
+                            <div class="consume-product-item">
+                                <select class="consume-product-select" required>
+                                    <option value="">Chọn sản phẩm</option>
+                                    </select>
+                                <input type="number" class="consume-product-quantity" placeholder="Số lượng" min="1" required>
+                                <button type="button" class="remove-product-button"><i class="fas fa-minus-circle"></i></button>
+                            </div>
+                        </div>
+                        <button type="button" id="addConsumeProductButton" class="action-button small"><i class="fas fa-plus-circle"></i> Thêm sản phẩm</button>
+                        <div class="form-group total-amount">
+                            <label>Tổng giá trị tiêu hao:</label>
+                            <span id="consumeTotalAmount">0 VNĐ</span>
+                        </div>
+                        <button type="submit" class="action-button"><i class="fas fa-save"></i> Lưu phiếu tiêu hao</button>
+                        <span id="consumeStatusMessage" class="status-message"></span>
+                    </form>
+                </div>
+            </div>
+
+            <div id="viewInventoryInModal" class="modal hidden">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h3>Chi tiết phiếu nhập kho</h3>
+                    <div id="viewInventoryInDetails">
+                        <p><strong>Mã phiếu:</strong> <span id="viewInventoryInId"></span></p>
+                        <p><strong>Ngày nhập:</strong> <span id="viewInventoryInDate"></span></p>
+                        <p><strong>Người nhập:</strong> <span id="viewInventoryInUser"></span></p>
+                        <p><strong>Nhà cung cấp:</strong> <span id="viewInventoryInSupplier"></span></p>
+                        <h4>Sản phẩm đã nhập</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Số lượng</th>
+                                    <th>Giá nhập (VNĐ)</th>
+                                    <th>Tổng</th>
+                                </tr>
+                            </thead>
+                            <tbody id="viewInventoryInProductsTableBody">
+                                </tbody>
+                        </table>
+                        <p class="total-amount"><strong>Tổng giá trị phiếu:</strong> <span id="viewInventoryInTotal"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="viewConsumeModal" class="modal hidden">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h3>Chi tiết phiếu tiêu hao</h3>
+                    <div id="viewConsumeDetails">
+                        <p><strong>Mã phiếu:</strong> <span id="viewConsumeId"></span></p>
+                        <p><strong>Ngày tạo:</strong> <span id="viewConsumeDate"></span></p>
+                        <p><strong>Người tạo:</strong> <span id="viewConsumeUser"></span></p>
+                        <p><strong>Lý do:</strong> <span id="viewConsumeReason"></span></p>
+                        <h4>Sản phẩm đã tiêu hao</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Số lượng</th>
+                                    <th>Giá nhập (VNĐ)</th>
+                                    <th>Tổng</th>
+                                </tr>
+                            </thead>
+                            <tbody id="viewConsumeProductsTableBody">
+                                </tbody>
+                        </table>
+                        <p class="total-amount"><strong>Tổng giá trị tiêu hao:</strong> <span id="viewConsumeTotal"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="confirmDeleteModal" class="modal hidden">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h3>Xác nhận xóa</h3>
+                    <p>Bạn có chắc chắn muốn xóa mục này không?</p>
+                    <div class="modal-actions">
+                        <button id="confirmDeleteButton" class="action-button delete-button">Xóa</button>
+                        <button id="cancelDeleteButton" class="action-button">Hủy</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
