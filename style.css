@@ -842,3 +842,77 @@ main {
         height: 300px; /* Chiều cao cho mobile màn hình nhỏ */
     }
 }
+
+.stock-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+}
+
+.stock-display .badge {
+    font-size: 0.7rem;
+    padding: 4px 6px;
+    min-width: 35px;
+    white-space: nowrap;
+}
+
+
+
+@media (max-width: 991.98px) {
+    .stock-display .badge {
+        font-size: 0.65rem;
+        padding: 3px 5px;
+        min-width: 30px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .stock-display {
+        min-height: 32px;
+    }
+    
+    .stock-display .badge {
+        font-size: 0.6rem;
+        padding: 2px 4px;
+        min-width: 25px;
+    }
+    
+}
+
+@media (max-width: 575.98px) {
+    .stock-display .badge {
+        font-size: 0.8rem;
+        padding: 2px 3px;
+        min-width: 20px;
+    }
+    
+    .sold-product-row .btn-danger {
+        padding: 4px 6px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Cải thiện hiển thị label ngắn cho mobile */
+@media (max-width: 767.98px) {
+    .sold-product-row .form-label {
+        font-size: 0.8rem;
+        margin-bottom: 3px;
+    }
+}
+
+/* Style cho input bị disable */
+.quantity-input:disabled {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #6c757d;
+}
+
+/* Alert styling cho validation */
+.quantity-input.is-invalid {
+    border-color: #dc3545;
+}
+
+.quantity-input.is-valid {
+    border-color: #198754;
+}

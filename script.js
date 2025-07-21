@@ -1602,20 +1602,26 @@ function editSold(soldId) {
         newRow.className = 'product-row-container sold-product-row';
         newRow.innerHTML = `
             <div class="row g-2">
-                <div class="col-md-5 col-sm-6 col-12">
+                <div class="col-md-5 col-sm-5 col-12">
                     <label class="form-label d-block d-md-none">Sản phẩm</label>
-                    <select class="form-select product-select" required>
+                    <select class="form-select product-select" required onchange="updateStockInfo(this)">
                         <option value="">Chọn sản phẩm</option>
                     </select>
                 </div>
-                <div class="col-md-4 col-sm-4 col-8">
-                    <label class="form-label d-block d-md-none">Số lượng</label>
-                    <input type="number" class="form-control quantity-input" placeholder="Số lượng" value="${product.quantity}" required>
+                <div class="col-md-1 col-sm-2 col-4">
+                    <label class="form-label d-block d-md-none">Tồn</label>
+                    <div class="stock-display">
+                        <span class="badge bg-secondary">-</span>
+                    </div>
                 </div>
-                <div class="col-md-3 col-sm-2 col-4">
+                <div class="col-md-3 col-sm-3 col-5">
+                    <label class="form-label d-block d-md-none">Số lượng</label>
+                    <input type="number" class="form-control quantity-input" placeholder="Số lượng" value="${product.quantity}" required onchange="validateQuantity(this)">
+                </div>
+                <div class="col-md-3 col-sm-2 col-3">
                     <label class="form-label d-block d-md-none">&nbsp;</label>
                     <button type="button" class="btn btn-danger w-100" onclick="removeSoldProduct(this)" title="Xóa">
-                        <i class="fas fa-trash"></i><span class="d-none d-sm-inline ms-1">Xóa</span>
+                        <i class="fas fa-trash"></i><span class="d-none d-lg-inline ms-1">Xóa</span>
                     </button>
                 </div>
             </div>
@@ -1625,11 +1631,15 @@ function editSold(soldId) {
         // Cập nhật select với giá trị đã chọn
         const select = newRow.querySelector('.product-select');
         updateSingleProductSelect(select, product.productId);
+        
+        // Cập nhật thông tin tồn kho
+        setTimeout(() => {
+            updateStockInfo(select);
+        }, 100);
     });
     
     new bootstrap.Modal(document.getElementById('soldModal')).show();
 }
-
 
 // Hàm hỗ trợ cập nhật single select
 function updateSingleProductSelect(selectElement, selectedProductId = null) {
@@ -1920,20 +1930,26 @@ function showAddSoldModal() {
     container.innerHTML = `
         <div class="product-row-container sold-product-row">
             <div class="row g-2">
-                <div class="col-md-5 col-sm-6 col-12">
+                <div class="col-md-5 col-sm-5 col-12">
                     <label class="form-label d-block d-md-none">Sản phẩm</label>
-                    <select class="form-select product-select" required>
+                    <select class="form-select product-select" required onchange="updateStockInfo(this)">
                         <option value="">Chọn sản phẩm</option>
                     </select>
                 </div>
-                <div class="col-md-4 col-sm-4 col-8">
-                    <label class="form-label d-block d-md-none">Số lượng</label>
-                    <input type="number" class="form-control quantity-input" placeholder="Số lượng" required>
+                <div class="col-md-1 col-sm-2 col-4">
+                    <label class="form-label d-block d-md-none">Tồn</label>
+                    <div class="stock-display">
+                        <span class="badge bg-secondary">-</span>
+                    </div>
                 </div>
-                <div class="col-md-3 col-sm-2 col-4">
+                <div class="col-md-3 col-sm-3 col-5">
+                    <label class="form-label d-block d-md-none">Số lượng</label>
+                    <input type="number" class="form-control quantity-input" placeholder="Số lượng" required onchange="validateQuantity(this)">
+                </div>
+                <div class="col-md-3 col-sm-2 col-3">
                     <label class="form-label d-block d-md-none">&nbsp;</label>
                     <button type="button" class="btn btn-danger w-100" onclick="removeSoldProduct(this)" title="Xóa">
-                        <i class="fas fa-trash"></i><span class="d-none d-sm-inline ms-1">Xóa</span>
+                        <i class="fas fa-trash"></i><span class="d-none d-lg-inline ms-1">Xóa</span>
                     </button>
                 </div>
             </div>
@@ -1944,27 +1960,32 @@ function showAddSoldModal() {
     new bootstrap.Modal(document.getElementById('soldModal')).show();
 }
 
-
 function addSoldProduct() {
     const container = document.getElementById('soldProducts');
     const newRow = document.createElement('div');
     newRow.className = 'product-row-container sold-product-row';
     newRow.innerHTML = `
         <div class="row g-2">
-            <div class="col-md-5 col-sm-6 col-12">
+            <div class="col-md-5 col-sm-5 col-12">
                 <label class="form-label d-block d-md-none">Sản phẩm</label>
-                <select class="form-select product-select" required>
+                <select class="form-select product-select" required onchange="updateStockInfo(this)">
                     <option value="">Chọn sản phẩm</option>
                 </select>
             </div>
-            <div class="col-md-4 col-sm-4 col-8">
-                <label class="form-label d-block d-md-none">Số lượng</label>
-                <input type="number" class="form-control quantity-input" placeholder="Số lượng" required>
+            <div class="col-md-1 col-sm-2 col-4">
+                <label class="form-label d-block d-md-none">Tồn</label>
+                <div class="stock-display">
+                    <span class="badge bg-secondary">-</span>
+                </div>
             </div>
-            <div class="col-md-3 col-sm-2 col-4">
+            <div class="col-md-3 col-sm-3 col-5">
+                <label class="form-label d-block d-md-none">Số lượng</label>
+                <input type="number" class="form-control quantity-input" placeholder="Số lượng" required onchange="validateQuantity(this)">
+            </div>
+            <div class="col-md-3 col-sm-2 col-3">
                 <label class="form-label d-block d-md-none">&nbsp;</label>
                 <button type="button" class="btn btn-danger w-100" onclick="removeSoldProduct(this)" title="Xóa">
-                    <i class="fas fa-trash"></i><span class="d-none d-sm-inline ms-1">Xóa</span>
+                    <i class="fas fa-trash"></i><span class="d-none d-lg-inline ms-1">Xóa</span>
                 </button>
             </div>
         </div>
@@ -1978,6 +1999,82 @@ function removeSoldProduct(button) {
     const rows = document.querySelectorAll('.sold-product-row');
     if (rows.length > 1) {
         button.closest('.product-row-container').remove();
+    }
+}
+
+function updateStockInfo(selectElement) {
+    const productId = selectElement.value;
+    const row = selectElement.closest('.product-row-container');
+    const stockDisplay = row.querySelector('.stock-display');
+    const quantityInput = row.querySelector('.quantity-input');
+    
+    if (productId) {
+        const imported = getProductImported(productId);
+        const sold = getProductSold(productId);
+        const currentStock = imported - sold;
+        
+        // Cập nhật hiển thị tồn kho
+        let badgeClass = 'bg-success';
+        let stockText = currentStock;
+        
+        if (currentStock <= 0) {
+            badgeClass = 'bg-danger';
+            stockText = '0';
+        } else {
+            const product = productsData.find(p => p.id === productId);
+            if (product && currentStock <= product.minStock) {
+                badgeClass = 'bg-warning';
+            }
+            
+            // Rút gọn số nếu quá lớn
+            if (currentStock >= 1000) {
+                stockText = (currentStock / 1000).toFixed(1) + 'k';
+            }
+        }
+        
+        stockDisplay.innerHTML = `<span class="badge ${badgeClass}" title="Tồn kho: ${currentStock}">${stockText}</span>`;
+        
+        // Reset và giới hạn số lượng input
+        quantityInput.value = '';
+        quantityInput.setAttribute('max', currentStock);
+        
+        if (currentStock <= 0) {
+            quantityInput.disabled = true;
+            quantityInput.placeholder = 'Hết hàng';
+        } else {
+            quantityInput.disabled = false;
+            quantityInput.placeholder = `Max: ${currentStock}`;
+        }
+    } else {
+        // Reset khi không chọn sản phẩm
+        stockDisplay.innerHTML = '<span class="badge bg-secondary">-</span>';
+        quantityInput.value = '';
+        quantityInput.disabled = false;
+        quantityInput.placeholder = 'Số lượng';
+        quantityInput.removeAttribute('max');
+    }
+}
+
+
+// Kiểm tra số lượng nhập có hợp lệ không
+function validateQuantity(inputElement) {
+    const row = inputElement.closest('.product-row-container');
+    const selectElement = row.querySelector('.product-select');
+    const productId = selectElement.value;
+    const quantity = parseInt(inputElement.value);
+    
+    if (productId && quantity) {
+        const imported = getProductImported(productId);
+        const sold = getProductSold(productId);
+        const currentStock = imported - sold;
+        
+        if (quantity > currentStock) {
+            showAlert(`Số lượng vượt quá tồn kho! Tồn kho hiện tại: ${currentStock}`, 'warning');
+            inputElement.value = currentStock;
+        } else if (quantity <= 0) {
+            showAlert('Số lượng phải lớn hơn 0!', 'warning');
+            inputElement.value = '';
+        }
     }
 }
 
